@@ -2,10 +2,15 @@
 #
 puts "It's quadr. equation, enter its ratios (as integers)"
 puts "Enter a: "
-a = gets.chomp.to_f
+a = gets.to_f
 
 # a should be  non-zero
-if a != 0
+while  a == 0
+  puts "a can't be 0, start over"
+  puts "Enter a: "
+  a = gets.to_f
+end
+
   puts "Enter b: "
   b = gets.to_f
   puts "Enter c: "
@@ -13,17 +18,14 @@ if a != 0
 
   diskrim = b**2 - 4 * a * c
 
-  if diskrim > 0
-    diskrim_sqrt = Math.sqrt(diskrim)
-    x1 = (-b + diskrim_sqrt) / (2 * a)
-    x2 = (-b - diskrim_sqrt) / (2 * a)
-    puts "D : #{diskrim}, x1 : #{x1}, x2 : #{x2}"
-  elsif  diskrim == 0
-    x1 = - b / (2 * a)
-    puts "D : #{diskrim}, x1 (equals to x2): #{x1}"
-  else
-    puts "D : #{diskrim}, корней нет"
-  end
+if diskrim > 0
+  diskrim_sqrt = Math.sqrt(diskrim)
+  x1 = (-b + diskrim_sqrt) / (2 * a)
+  x2 = (-b - diskrim_sqrt) / (2 * a)
+  puts "D : #{diskrim}, x1 : #{x1}, x2 : #{x2}"
+elsif  diskrim == 0
+  x1 = - b / (2 * a)
+  puts "D : #{diskrim}, x1 (equals to x2): #{x1}"
 else
-  puts "a can't be 0, start over"
+  puts "D : #{diskrim}, корней нет"
 end

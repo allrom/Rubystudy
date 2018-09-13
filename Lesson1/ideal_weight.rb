@@ -9,7 +9,7 @@ height = gets.to_i
 weight = height - 110
 
 if weight >= 0
-	puts "#{name}, Ваш идеальный вес -> #{weight} кг."
+  puts "#{name}, Ваш идеальный вес -> #{weight} кг."
 else
-	puts "#{name}, Ваш вес уже оптимальный ."
+  puts "#{name}, Ваш вес уже оптимальный ."
 end
