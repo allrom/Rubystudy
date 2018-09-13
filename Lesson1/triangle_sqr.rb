@@ -1,9 +1,11 @@
 # Lesson 1 / Triangle square
 #
 puts "Enter triangle base: "
-base = gets
+base = gets.to_f
 
 puts "Enter triangle height: "
-height = gets
+height = gets.to_f
 
-puts " (Rounded) result : square is #{(base.to_f * height.to_f * 0.5).round(2)} units"
+square = (base * height * 0.5).round(2)
+
+puts "(Rounded) result: square is #{square} units"

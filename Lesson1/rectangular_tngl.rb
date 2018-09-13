@@ -1,56 +1,29 @@
 # Lesson 1 / Rectangular Triangle
 #
-
-# <LF> is still present if no chomp
 puts "Enter triangle 1-st side (integer): "
-a = gets.chomp
+a = gets.to_i
 puts "Enter triangle 2-nd side (integer): "
-b = gets.chomp
+b = gets.to_i
 puts "Enter triangle 3-rd side (integer): "
-c = gets.chomp
+c = gets.to_i
 
-sent = "trivial"
 # compute squares
-a_sqr = a.to_i**2
-b_sqr = b.to_i**2
-c_sqr = c.to_i**2
-# for later arrangement
-sides_sqr = [a_sqr, b_sqr, c_sqr]
+a_sqr = a**2
+b_sqr = b**2
+c_sqr = c**2
+#  arrangement
+sides_sqr = [a_sqr, b_sqr, c_sqr].sort!
 
-# first check if  all sides are equal
-if a == b && a == c
-  puts "Triangle has equal sides : #{a}, #{b}, #{c} and is not rectangular"
-
-# then if  fig. is rectang. and/or sides are equal  
-elsif   sides_sqr.sort.last == a_sqr
-  if a_sqr == b_sqr + c_sqr
-    puts "Sides are :  #{a}<, #{b}, #{c} and"
-    sent = "rectangular"
-  end  
-  if  b_sqr == c_sqr
-    puts "Triangle is  isosceles #{a}, #{b}<, #{c}<" 
-# next operator correctly terminates the  "else", i think    
-      else puts "Triangle is #{sent}" 
-  end     
-   
-elsif   sides_sqr.sort.last == b_sqr
-  if b_sqr == a_sqr + c_sqr
-    puts "Sides are : #{a}, #{b}<, #{c} and"
-    sent = "rectangular"
-  end  
-  if  a_sqr == c_sqr
-    puts "Triangle is  isosceles  #{a}<, #{b}, #{c}<" 
-      else puts "Triangle is #{sent}"  
+case a == b && a == c
+when true
+  puts "Triangle has equal sides and is not rectangular"
+when false
+  if sides_sqr[2] == (sides_sqr[0] + sides_sqr[1])
+    puts "Triangle is rectangular"
   end
- 
-elsif   sides_sqr.sort.last == c_sqr
-  if c_sqr == a_sqr + b_sqr
-    puts "Sides are : #{a}, #{b}, #{c}< and"
-    sent = "rectangular"
-  end  
-  if  a_sqr == b_sqr                                  
-    puts "Triangle is  isosceles #{a}<, #{b}<, #{c}"                                                                     
-      else puts "Triangle is #{sent}"       
+  if sides_sqr[0] == sides_sqr[1]
+    puts "Triangle is isosceles"
+  else
+    puts "Triangle sides aren't equal"
   end
-                                                    
 end
