@@ -11,12 +11,12 @@ while  a == 0
   a = gets.to_f
 end
 
-  puts "Enter b: "
-  b = gets.to_f
-  puts "Enter c: "
-  c = gets.to_f
+puts "Enter b: "
+b = gets.to_f
+puts "Enter c: "
+c = gets.to_f
 
-  diskrim = b**2 - 4 * a * c
+diskrim = b**2 - 4 * a * c
 
 if diskrim > 0
   diskrim_sqrt = Math.sqrt(diskrim)

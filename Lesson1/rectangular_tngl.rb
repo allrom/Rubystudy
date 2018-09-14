@@ -14,9 +14,10 @@ c_sqr = c**2
 #  arrangement
 sides_sqr = [a_sqr, b_sqr, c_sqr].sort!
 
-if sides_sqr[2] == (sides_sqr[0] + sides_sqr[1])
+if (sides_sqr[0] == sides_sqr[1]) && (sides_sqr[2] == 2 * sides_sqr[0])
+  puts "Triangle is rectangular and isosceles"
+elsif sides_sqr[2] == (sides_sqr[0] + sides_sqr[1])
   puts "Triangle is rectangular"
-  puts "Triangle is isosceles" if sides_sqr[0] == sides_sqr[1]
 elsif sides_sqr.min == sides_sqr.max
   puts "Triangle has equal sides and is not rectangular"
 else
