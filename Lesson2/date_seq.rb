@@ -16,6 +16,6 @@ if year % 400 == 0 || year % 4 == 0 && year % 100 != 0
   sign = 'leap'
 end
 
-date_sequence = date + months.first(month-1).sum
+date_sequence = date + months.first(month - 1).sum
 
 puts "\nDate sequence in this #{sign} #{year} year is: #{date_sequence}"

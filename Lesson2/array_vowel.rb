@@ -5,8 +5,8 @@ vowels = %w(A E I O U Y)
 
 result_index = {}
 
-letters.each.with_index(1) { |letter, index|
-  result_index[letter] = index  if vowels.include?(letter)
-}
+letters.each.with_index(1) do |letter, index|
+  result_index[letter] = index if vowels.include?(letter)
+end
 
 puts result_index

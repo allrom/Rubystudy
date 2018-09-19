@@ -14,27 +14,16 @@ loop do
   puts "Enter the quantity:"
   quantity = gets.to_f
 
-  to_pay = { item_price: price }
-  to_carry = { item_qty: quantity }
-
-  cart[item] = to_pay.merge(to_carry)
+  cart[item] = { price: price, quantity: quantity }
 end
 
 puts cart
 puts ""
 
-cart_total = item_total = 0
+cart_total = 0
 
 cart.each do |item, buy|
-  bvals = []
-
-    buy.each_value do |bval|
-    bvals << bval
-    end
-
-  price_t = bvals[0]
-  quantity_t = bval[1]
-  item_total = price_t * quantity_t
+  item_total = buy[:price] * buy[:quantity]
   puts "For #{item}, total: #{item_total}"
   cart_total += item_total
 end
