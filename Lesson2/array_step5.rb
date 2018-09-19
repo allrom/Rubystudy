@@ -2,9 +2,11 @@
 #
 numbers_five = []
 
-for i in 10..100
-   next if i % 5 != 0
+i = 10
+
+while i <= 100
   numbers_five << i
+  i += 5
 end
 
 puts numbers_five
