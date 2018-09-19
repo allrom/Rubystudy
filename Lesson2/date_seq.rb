@@ -1,21 +1,32 @@
 # Lesson 2 / Date sequence
 #
 puts "Enter the Date:"
-date = gets.to_i
+date = gets.chomp.to_i
 
 puts "Enter the Month:"
-month = gets.to_i
+month = gets.chomp.to_i
 
 puts "Enter the Year:"
-year = gets.to_i
+year = gets.chomp.to_i
 
-months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+month_hash = { 0 => 0,  1 => 31, 2 => 28, 3 => 31,
+               4 => 30, 5 => 31, 6 => 30, 7 => 31,
+               8 => 31, 9 => 30, 10 => 31, 11 => 30,
+               12 => 31 }
 
-if year % 400 == 0 || year % 4 == 0 && year % 100 != 0
-  months[1] = 29
-  sign = 'leap'
+# check for leap year (modulus is in lower priority)
+if (year % 400) == 0 || ((year % 4) == 0 && (year % 100) != 0)
+  month_hash[2] = 29
+  puts "*leap year*"
 end
 
-date_sequence = date + months.first(month-1).sum
+date_sequence = i = 0
 
-puts "\nDate sequence in this #{sign} #{year} year is: #{date_sequence}"
+while i < month
+  date_sequence += month_hash[i]
+  i += 1
+end
+
+date_sequence += date
+
+puts "\nDate sequence in this year is: #{date_sequence}"

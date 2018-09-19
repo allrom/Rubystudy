@@ -1,12 +1,16 @@
 # Lesson 2 / Array with vowels
 #
 letters = ('A'..'Z').to_a
-vowels = %w(A E I O U Y)
+vowels = ['A', 'E', 'I', 'O', 'U', 'Y']
+hash_vowels = Hash.new
 
-result_index = {}
+vowels.each do |vowel|
 
-letters.each.with_index(1) { |letter, index|
-  result_index[letter] = index  if vowels.include?(letter)
-}
+  letters.each do |letter|
+# shift index by 1 to make it "human"
+  hash_vowels[vowel] = letters.index(letter).to_i + 1 if letter == vowel
+  end
 
-puts result_index
+end
+
+puts hash_vowels

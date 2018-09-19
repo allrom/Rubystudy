@@ -1,41 +1,33 @@
 # Lesson 2 / Items in cart
 #
-cart = {}
+hash_cart = Hash.new
 
 loop do
   puts "Enter item to buy:"
   item = gets.chomp
-
   break if item == "стоп"
 
   puts "Enter the price:"
-  price = gets.to_i
+  price = gets.chomp.to_i
 
   puts "Enter the quantity:"
-  quantity = gets.to_f
+  quantity = gets.chomp.to_f
 
-  to_pay = { item_price: price }
-  to_carry = { item_qty: quantity }
+  hash_cart[item] = {price => quantity}
 
-  cart[item] = to_pay.merge(to_carry)
 end
 
-puts cart
+puts hash_cart
 puts ""
 
 cart_total = item_total = 0
 
-cart.each do |item, buy|
-  bvals = []
-
-    buy.each_value do |bval|
-    bvals << bval
-    end
-
-  price_t = bvals[0]
-  quantity_t = bval[1]
-  item_total = price_t * quantity_t
-  puts "For #{item}, total: #{item_total}"
+hash_cart.each do |item, price|
+  item_quantity = 0
+  price.each do |item_price, quantity|
+    item_total = item_price * quantity
+    puts "For #{item}, total: #{item_total}"
+  end
   cart_total += item_total
 end
 
