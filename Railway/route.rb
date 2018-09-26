@@ -4,19 +4,24 @@ class Route
   def initialize(station_start, station_end)
     @station_start = station_start
     @station_end = station_end
-    @stations_in_route = []
+    @in_route = [@station_start, @station_end]
   end
 
   def station_add(station)
-    @stations_in_route << station
+    @in_route.insert(-2, station)
   end
 
   def station_remove(station)
-    @stations_in_route.delete(station)
+    @in_route.delete(station) unless
+      station == @in_route.first || station == @in_route.last
   end
 
   def station_list
-    all_stations = [@station_start, @stations_in_route, @station_end].flatten!
-    all_stations.each { |title| puts title }
+    @in_route
+  end
+
+  def station_display
+    puts "Stations:"
+    @in_route.each { |station| puts station.title }
   end
 end
