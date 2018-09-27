@@ -26,8 +26,6 @@ class Station
   end
 
   def train_type_display(type)
-    type_count = 0
-    @trains_at_station.each { |train| type_count += 1 if train.type == type }
-    type_count
+    @trains_at_station.count { |train| train.type == type }
   end
 end

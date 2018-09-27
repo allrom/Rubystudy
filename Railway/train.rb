@@ -14,11 +14,11 @@ class Train
   end
 
   def slowdown(slower)
-    @speed -= slower unless @speed - slower < 0
+    speed >= slower ?  @speed -= slower : fullstop
   end
 
   def accelerate(faster)
-    @speed += faster
+    @speed += faster unless faster <= 0
   end
 
   def carr_total
@@ -35,45 +35,58 @@ class Train
 
   def route=(route)
     @route = route
-    @stn_idx = 0
-    assigned_to = arrive
+    @stn_idx = @prev_idx = 0
+    @next_idx = 1
+    arrive
   end
 
-  def actual_station(current_stn_index)
-    @route.station_list[current_stn_index]
+  def route_limit?
+    @stn_idx == @route.station_list.size - 1
+  end
+
+  def route_start?
+    @stn_idx == 0
+  end
+
+  def previous_station
+    @route.station_list[@prev_idx]
+  end
+
+  def actual_station
+    @route.station_list[@stn_idx]
+  end
+
+  def next_station
+    @route.station_list[@next_idx]
   end
 
   def arrive
-    actual_station(@stn_idx).train_arrive(self)
+    actual_station.train_arrive(self)
   end
 
-  def departure(dep_stn_index)
-    actual_station(dep_stn_index).train_depart(self)
+  def departure
+    actual_station.train_depart(self)
   end
 
   def go_forward
-    @stn_idx += 1 if @stn_idx < @route.station_list.size - 1
-    arrived_to = arrive
-    left_from = departure(@stn_idx - 1)
-    @actual = actual_station(@stn_idx)
+    unless route_limit?
+      departure
+      @prev_idx = @stn_idx
+      @stn_idx += 1
+      arrive
+    end
+    @next_idx = @stn_idx + 1 unless route_limit?
+    actual_station
   end
 
   def go_back
-    @stn_idx -= 1 unless @stn_idx == 0
-    arrived_to = arrive
-    left_from = departure(@stn_idx + 1)
-    @actual = actual_station(@stn_idx)
-  end
-
-  def stations_btw
-    actual = actual_station(@stn_idx)
-    follow = actual_station(@stn_idx + 1) unless actual == @route.station_list.last
-    @stn_idx >= 1 ? previous = actual_station(@stn_idx - 1) : previous = follow
-    @on_track = [previous, actual, follow].compact
-  end
-
-  def stations_btw_display
-    puts "Stations-in-between:"
-    stations_btw.each { |station| puts station.title }
+    unless route_start?
+      departure
+      @prev_idx = @stn_idx
+      @stn_idx -= 1
+      arrive
+    end
+    @next_idx = @stn_idx - 1 unless route_start?
+    actual_station
   end
 end
