@@ -14,11 +14,11 @@ class Train
   end
 
   def slowdown(slower)
-    speed >= slower ?  @speed -= slower : fullstop
+    speed >= slower ? @speed -= slower : fullstop
   end
 
   def accelerate(faster)
-    @speed += faster unless faster <= 0
+    faster.positive? ? @speed += faster : @speed = slowdown(faster.abs)
   end
 
   def carr_total
@@ -35,29 +35,21 @@ class Train
 
   def route=(route)
     @route = route
-    @stn_idx = @prev_idx = 0
-    @next_idx = 1
+    @station_index = 0
+    @next_station = @route.station_list[1]
     arrive
   end
 
-  def route_limit?
-    @stn_idx == @route.station_list.size - 1
-  end
-
-  def route_start?
-    @stn_idx == 0
-  end
-
   def previous_station
-    @route.station_list[@prev_idx]
+    @previous_station
   end
 
   def actual_station
-    @route.station_list[@stn_idx]
+    @route.station_list[@station_index]
   end
 
   def next_station
-    @route.station_list[@next_idx]
+    @next_station
   end
 
   def arrive
@@ -66,27 +58,25 @@ class Train
 
   def departure
     actual_station.train_depart(self)
+    @previous_station = actual_station
   end
 
   def go_forward
-    unless route_limit?
+    unless actual_station == @route.route_end
       departure
-      @prev_idx = @stn_idx
-      @stn_idx += 1
+      @station_index += 1
       arrive
+      @next_station = @route.station_list[@station_index + 1] unless
+        @route.station_list[@station_index + 1].nil?
     end
-    @next_idx = @stn_idx + 1 unless route_limit?
-    actual_station
   end
 
   def go_back
-    unless route_start?
+    unless actual_station == @route.route_start
       departure
-      @prev_idx = @stn_idx
-      @stn_idx -= 1
+      @station_index -= 1
       arrive
+      @next_station = @route.station_list[@station_index - 1] unless (@station_index - 1).negative?
     end
-    @next_idx = @stn_idx - 1 unless route_start?
-    actual_station
   end
 end

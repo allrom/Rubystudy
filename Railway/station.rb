@@ -25,7 +25,7 @@ class Station
     @trains_at_station.each { |s_train| puts s_train.number }
   end
 
-  def train_type_display(type)
+  def train_type_count(type)
     @trains_at_station.count { |train| train.type == type }
   end
 end
