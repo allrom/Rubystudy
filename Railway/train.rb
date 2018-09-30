@@ -18,7 +18,7 @@ class Train
   end
 
   def accelerate(faster)
-    faster.positive? ? @speed += faster : @speed = slowdown(faster.abs)
+    faster.positive? ? @speed += faster : slowdown(faster.abs)
   end
 
   def carr_total
@@ -36,12 +36,15 @@ class Train
   def route=(route)
     @route = route
     @station_index = 0
-    @next_station = @route.station_list[1]
     arrive
   end
 
   def previous_station
-    @previous_station
+    if @reverse
+      @route.station_list[@station_index + 1]
+    else
+      @route.station_list[@station_index - 1] if @station_index.positive?
+    end
   end
 
   def actual_station
@@ -49,7 +52,11 @@ class Train
   end
 
   def next_station
-    @next_station
+    unless @reverse
+      @route.station_list[@station_index + 1] if @station_index + 1 < @route.station_list.size
+    else
+      @route.station_list[@station_index - 1] if @station_index.positive?
+    end
   end
 
   def arrive
@@ -58,7 +65,6 @@ class Train
 
   def departure
     actual_station.train_depart(self)
-    @previous_station = actual_station
   end
 
   def go_forward
@@ -66,8 +72,7 @@ class Train
       departure
       @station_index += 1
       arrive
-      @next_station = @route.station_list[@station_index + 1] unless
-        @route.station_list[@station_index + 1].nil?
+      @reverse = false
     end
   end
 
@@ -76,7 +81,7 @@ class Train
       departure
       @station_index -= 1
       arrive
-      @next_station = @route.station_list[@station_index - 1] unless (@station_index - 1).negative?
+      @reverse = true
     end
   end
 end
