@@ -7,6 +7,7 @@ class Train
     @number = number
     @type = type
     @carriages = carriages
+    @speed = 0
   end
 
   def fullstop
@@ -40,7 +41,7 @@ class Train
   end
 
   def previous_station
-      @route.station_list[@station_index - 1] if @station_index.positive?
+    @route.station_list[@station_index - 1] if @station_index.positive?
   end
 
   def actual_station
@@ -48,7 +49,7 @@ class Train
   end
 
   def next_station
-      @route.station_list[@station_index + 1] if @station_index + 1 < @route.station_list.size
+    @route.station_list[@station_index + 1] if @station_index + 1 < @route.station_list.size
   end
 
   def arrive
@@ -60,7 +61,7 @@ class Train
   end
 
   def go_forward
-    unless actual_station == @route.route_end
+    if next_station
       departure
       @station_index += 1
       arrive
@@ -68,7 +69,7 @@ class Train
   end
 
   def go_back
-    unless actual_station == @route.route_start
+    if previous_station
       departure
       @station_index -= 1
       arrive
