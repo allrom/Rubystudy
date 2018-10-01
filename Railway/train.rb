@@ -40,11 +40,7 @@ class Train
   end
 
   def previous_station
-    if @reverse
-      @route.station_list[@station_index + 1]
-    else
       @route.station_list[@station_index - 1] if @station_index.positive?
-    end
   end
 
   def actual_station
@@ -52,11 +48,7 @@ class Train
   end
 
   def next_station
-    unless @reverse
       @route.station_list[@station_index + 1] if @station_index + 1 < @route.station_list.size
-    else
-      @route.station_list[@station_index - 1] if @station_index.positive?
-    end
   end
 
   def arrive
@@ -72,7 +64,6 @@ class Train
       departure
       @station_index += 1
       arrive
-      @reverse = false
     end
   end
 
@@ -81,7 +72,6 @@ class Train
       departure
       @station_index -= 1
       arrive
-      @reverse = true
     end
   end
 end
