@@ -22,10 +22,6 @@ class Train
     faster.positive? ? @speed += faster : slowdown(faster.abs)
   end
 
-  def carr_total
-    @carriages
-  end
-
   def carr_attach
     @carriages += 1 if speed == 0
   end
@@ -49,7 +45,7 @@ class Train
   end
 
   def next_station
-    @route.station_list[@station_index + 1] if @station_index + 1 < @route.station_list.size
+    @route.station_list[@station_index + 1]
   end
 
   def arrive

@@ -2,19 +2,19 @@
 #
 class Route
   def initialize(station_start, station_end)
-    @in_route = [station_start, station_end]
+    @stations = [station_start, station_end]
   end
 
   def route_start
-    @in_route.first
+    @stations.first
   end
 
   def route_end
-    @in_route.last
+    @stations.last
   end
 
   def station_add(station)
-    @in_route.insert(-2, station)
+    @stations.insert(-2, station)
   end
 
   def boundary_station?(station)
@@ -22,15 +22,15 @@ class Route
   end
 
   def station_remove(station)
-    @in_route.delete(station) unless boundary_station?(station)
+    @stations.delete(station) unless boundary_station?(station)
   end
 
   def station_list
-    @in_route
+    @stations
   end
 
   def station_display
     puts "Stations:"
-    @in_route.each { |station| puts station.title }
+    @stations.each { |station| puts station.title }
   end
 end
