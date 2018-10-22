@@ -27,15 +27,10 @@ class Train
   end
 
   def carr_attach(carriage)
-    return puts "\tCan't mix object types..."unless type_match?(carriage)
-    return puts "\tThis carriage is attached already..." unless carriage.detached
-    return puts "\tProhibited action - train is in motion..." if not_stopped?
     carr_attach!(carriage)
   end
 
   def carr_detach(carriage)
-    return puts "\tProhibited action - train is in motion..." if not_stopped?
-    return puts "\tProhibited action - train has no carriages..." if @carriages.empty?
     carr_detach!(carriage)
   end
 
@@ -69,31 +64,6 @@ class Train
     @carriages
   end
 
-  def status_pos
-    puts "Train is at: #{actual_station&.title}"
-    puts "The next is: #{next_station&.title}"
-    puts "The previous is: #{previous_station&.title}"
-  end
-
-  def status_carr
-    print " Train has #{carriage_count} carriage(s): "
-    self.carriage_list.each { |carr| print "#{carr.number} \> " }
-  end
-
-  def status_route
-    puts "This #{type.to_s} train is on route #{route.number}"
-  end
-
-  def type_match?(carriage)
-    carriage.type == self.type
-  end
-
-  # These methods should be passed to subclasses
-  # but shouldn't be called from "outside"
-  # and display info or alter train location
-
-  protected
-
   def previous_station
     @route.station_list[@station_index - 1] if @station_index.positive?
   end
@@ -106,11 +76,33 @@ class Train
     @route.station_list[@station_index + 1]
   end
 
+  def type_match?(carriage)
+    carriage.type == self.type
+  end
+
+  # These methods should be passed to subclasses
+  # but shouldn't be called from "outside"
+  # and alter train location or
+  # attach/detach carriages
+
+  protected
+
   def arrive
     actual_station.train_arrive(self)
   end
 
   def departure
     actual_station.train_depart(self)
+  end
+
+  def carr_attach!(carriage)
+    @carriages << carriage
+    carriage.attached!
+    carriage.my_train_num = self.number
+  end
+
+  def carr_detach!(carriage)
+    @carriages.delete(carriage)
+    carriage.detached!
   end
 end

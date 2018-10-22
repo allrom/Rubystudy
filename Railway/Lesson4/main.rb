@@ -9,83 +9,93 @@ require_relative 'cargo_carriage.rb'
 require_relative 'route.rb'
 require_relative 'station.rb'
 
-puts "\t* RailRoad simulator *"
-
 
 class RailRoadSim
+  MAIN_MENU = "\n * Selection Menu. Enter correct menu digit or any other to quit *\n"
+  SUB_MENU  = "\n * Enter correct menu digit or any other to return *"
 
   def initialize
-    @created_stations = []
-    @created_trains = []
-    @created_routes = []
-    @created_carriages = []
+    puts "\t* RailRoad simulator *"
+    @stations = []
+    @trains = []
+    @routes = []
+    @carriages = []
   end
 
   def menu
-    puts "\n* Selection Menu. Enter correct digit or any other to quit *\n
+    puts MAIN_MENU
+    puts "
       1:  Create Station
       2:  Train Operations
       3:  Route Operations
       4:  Carriage Operations
       5:  Info"
     case gets.strip
-      when "1"
-        create_station
-        self.menu
-      when "2"
-        train_operations
-        self.menu
-      when "3"
-        route_operations
-        self.menu
-      when "4"
-        carriage_operations
-        self.menu
-      when "5"
-        info
-        self.menu
-      else
-        puts "Exiting..."
+    when "1"
+      create_station
+      self.menu
+    when "2"
+      train_operations
+      self.menu
+    when "3"
+      route_operations
+      self.menu
+    when "4"
+      carriage_operations
+      self.menu
+    when "5"
+      info
+      self.menu
+    else
+      puts "Exiting..."
     end
   end
 
   def create_station
     puts "\nEnter Station title:"
     st_title = gets.chomp.to_sym
-    return puts "\tTry again, empty field" if st_title.empty?
-    @created_stations << Station.new(st_title)
+    return  puts "\tTry again, empty field" if st_title.empty?
+    @stations << Station.new(st_title)
     puts "\tStation #{st_title} is created"
   end
 
   def train_operations
-    puts "\n* Enter correct digit or any other to return *\n
+    puts SUB_MENU
+    puts "
       1:  Create Train
       2:  Assign Route to Train
       3:  Relocate Train"
     case gets.strip
-      when "1"
-        create_train
-        self.train_operations
-      when "2"
-        assign_route
-        self.train_operations
-      when "3"
-        reallocate_train
-        self.train_operations
-      else
-        puts "Exiting up..."
-        self.menu
+    when "1"
+      create_train
+      self.train_operations
+    when "2"
+      assign_route
+      self.train_operations
+    when "3"
+      reallocate_train
+      self.train_operations
+    else
+      puts "Exiting up..."
+      self.menu
     end
   end
 
   def create_train
-    puts "\nEnter \"p\" to create passng train, \"c\" to create cargo one"
-    puts "or any symbol to return"
-    type_select = gets.chomp
-    if type_select == 'p' || type_select == 'c'
-      type_select == 'p' ? create_passng_train : create_cargo_train
+    puts SUB_MENU
+    puts "
+      1:  Create Passenger Train
+      2:  Create Cargo Train"
+    case gets.strip
+    when "1"
+      create_passng_train
+      self.train_operations
+    when "2"
+      create_cargo_train
+      self.train_operations
     else
       puts "Exiting up..."
+      self.menu
     end
   end
 
@@ -93,7 +103,7 @@ class RailRoadSim
     puts "\nEnter Train number:"
     train_num = gets.to_i
     return puts "\tTry again, empty field" if train_num.zero?
-    @created_trains << PassengerTrain.new(train_num)
+    @trains << PassengerTrain.new(train_num)
     puts "\tPassenger Train #{train_num} is created"
   end
 
@@ -101,7 +111,7 @@ class RailRoadSim
     puts "\nEnter Train number:"
     train_num = gets.to_i
     return puts "\tTry again, empty field" if train_num.zero?
-    @created_trains << CargoTrain.new(train_num)
+    @trains << CargoTrain.new(train_num)
     puts "\tCargo Train #{train_num} is created"
   end
 
@@ -121,7 +131,7 @@ class RailRoadSim
       train_change.route = route_assign
       puts "\tRoute #{route_num} is assigned"
     else
-      puts "\tFirstly create at least one Route and/or Train..."
+      puts "\tFirstly create at least one Route and/or Train"
       self.menu
     end
   end
@@ -134,39 +144,49 @@ class RailRoadSim
       train_realloc = trains.detect { |train| train.number == train_num }
       return puts "\tUnknown Train" if train_realloc.nil?
       return puts "\tRoute not anassigned" if train_realloc.route.nil?
-      train_realloc.status_route
-      puts "\nEnter \"f\" to go forward, \"r\" to reverse or any symbol to return"
-      go_select = gets.chomp
-      if go_select == 'f' || go_select == 'r'
-        go_select == 'f' ? train_realloc.go_forward : train_realloc.go_back
-        train_realloc.status_pos
+      puts "This #{train_realloc.type.to_s} train is on route #{train_realloc.route.number}"
+      puts SUB_MENU
+      puts "
+        1:  Train Go Forward
+        2:  Train Go Reverse"
+      case gets.strip
+      when "1"
+        train_realloc.go_forward
+      when "2"
+        train_realloc.go_back
       else
         puts "Exiting up..."
+        self.train_operations
       end
+      puts "Train is at: #{train_realloc.actual_station&.title}"
+      puts "The next is: #{train_realloc.next_station&.title}"
+      puts "The previous is: #{train_realloc.previous_station&.title}"
+      self.train_operations
     else
-      puts "\tFirstly create at least one Route and/or Train..."
+      puts "\tFirstly create at least one Route and/or Train"
       self.menu
     end
   end
 
   def route_operations
-    puts "\n* Enter correct digit or any other to return *\n
+    puts SUB_MENU
+    puts "
       1:  Create Route
       2:  Assign Station to existent Route
       3:  Deassign Station from Route"
     case gets.strip
-      when "1"
-        create_route
-        self.route_operations
-      when "2"
-        assign_station
-        self.route_operations
-      when "3"
-        deassign_station
-        self.route_operations
-      else
-        puts "Exiting up..."
-        self.menu
+    when "1"
+      create_route
+      self.route_operations
+    when "2"
+      assign_station
+      self.route_operations
+    when "3"
+      deassign_station
+      self.route_operations
+    else
+      puts "Exiting up..."
+      self.menu
     end
   end
 
@@ -174,16 +194,18 @@ class RailRoadSim
     unless stations.size < 2
       puts "\nEnter Route number:"
       route_num = gets.to_i
+      return puts "\tTry again, empty field" if route_num.zero?
       puts "Enter First Station title in route:"
       st_first = gets.chomp.to_sym
-      puts "Enter Last Station title in route:"
-      st_last = gets.chomp.to_sym
-      return puts "\tTry again, empty field(s)" if route_num.zero? || st_first.empty? || st_last.empty?
+      return puts "\tTry again, empty field(s)" if st_first.empty?
       add_first = stations.detect { |station| station.title == st_first }
       return puts "\tUnknown Station" if add_first.nil?
+      puts "Enter Last Station title in route:"
+      st_last = gets.chomp.to_sym
+      return puts "\tTry again, empty field(s)" if st_last.empty?
       add_last = stations.detect { |station| station.title == st_last }
       return puts "\tUnknown Station" if add_last.nil?
-      @created_routes << Route.new(route_num, add_first, add_last)
+      @routes << Route.new(route_num, add_first, add_last)
       puts "\tRoute #{route_num} is created"
     else
       puts "\tNeeds at least two stations to create route"
@@ -196,7 +218,7 @@ class RailRoadSim
     st_title = gets.chomp.to_sym
     return puts "\tTry again, empty field" if st_title.empty?
     st_assign = stations.detect { |station| station.title == st_title }
-    return puts "\tStation doesn't exist" if st_assign.nil?
+    return puts "\tUnknown Station" if st_assign.nil?
     puts "Enter Route number:"
     route_num = gets.to_i
     return puts "\tTry again, empty field" if route_num.zero?
@@ -212,7 +234,7 @@ class RailRoadSim
     st_title = gets.chomp.to_sym
     return puts "\tTry again, empty field" if st_title.empty?
     st_assign = stations.detect { |station| station.title == st_title }
-    return puts "\tStation doesn't exist" if st_assign.nil?
+    return puts "\tUnknown Station" if st_assign.nil?
     puts "Enter Route number:"
     route_num = gets.to_i
     return puts "\tTry again, empty field" if route_num.zero?
@@ -226,30 +248,42 @@ class RailRoadSim
   end
 
   def carriage_operations
-    puts "\n* Enter correct digit or any other to return *\n
+    puts SUB_MENU
+    puts "
       1:  Create Carriage
-      2:  Attach/Detach Carriage to Train"
+      2:  Attach Carriage to Train
+      3:  Detach Carriage from Train"
     case gets.strip
-      when "1"
-        create_carriage
-        self.carriage_operations
-      when "2"
-        attach_detach
-        self.carriage_operations
-      else
-        puts "Exiting up..."
-        self.menu
+    when "1"
+      create_carriage
+      self.carriage_operations
+    when "2"
+      attach
+      self.carriage_operations
+    when "3"
+      detach
+      self.carriage_operations
+    else
+      puts "Exiting up..."
+      self.menu
     end
   end
 
   def create_carriage
-    puts "\nEnter \"p\" to create passng carriage, \"c\" to create cargo one"
-    puts "Or any symbol to return"
-    type_select = gets.chomp
-    if type_select == 'p' || type_select == 'c'
-      type_select == 'p' ? create_passng_carr : create_cargo_carr
+    puts SUB_MENU
+    puts "
+      1:  Create Passenger Carriage
+      2:  Create Cargo Carriage"
+    case gets.strip
+    when "1"
+      create_passng_carr
+      self.carriage_operations
+    when "2"
+      create_cargo_carr
+      self.carriage_operations
     else
       puts "Exiting up..."
+      self.menu
     end
   end
 
@@ -257,7 +291,7 @@ class RailRoadSim
     puts "\nEnter Carriage number:"
     carr_num = gets.to_i
     return puts "\tTry again, empty field" if carr_num.zero?
-    @created_carriages << PassengerCarriage.new(carr_num)
+    @carriages << PassengerCarriage.new(carr_num)
     puts "\tPassng Carriage #{carr_num} is created"
   end
 
@@ -265,91 +299,125 @@ class RailRoadSim
     puts "\nEnter Carriage number:"
     carr_num = gets.to_i
     return puts "\tTry again, empty field" if carr_num.zero?
-    @created_carriages << CargoCarriage.new(carr_num)
+    @carriages << CargoCarriage.new(carr_num)
     puts "\tCargo Carriage #{carr_num} is created"
   end
 
-  def attach_detach
-    puts "\nEnter Carriage number:"
-    carr_num = gets.to_i
-    return puts "\tTry again, empty field" if carr_num.zero?
-    carr_relay = carriages.detect { |carr| carr.number == carr_num }
+  def attach
+    puts "\nCarriages are (if any):"
+    @carriages.each.with_index(1) do |carr, index|
+      print " #{index}\.   #{carr.number}  #{carr.type}"
+      print ",  status: ", carr.detached ? "detached\n" : "attached\n"
+    end
+    puts SUB_MENU
+    idx = gets.to_i
+    return puts "\tTry again, empty field" if idx.zero?
+    carr_relay = @carriages[idx - 1]
     return puts "\tUnknown Carriage" if carr_relay.nil?
-    puts "\Enter Train number:"
+    puts "\nEnter Train number:"
     train_num = gets.to_i
     return puts "\tTry again, empty field" if train_num.zero?
     train_change = trains.detect { |train| train.number == train_num }
     return puts "\tUnknown Train" if train_change.nil?
     puts "\tThis train is of type #{train_change.type}"
-    carr_relay.status
-    puts "\nEnter \"a\" to Attach, \"d\" to Detach or any symbol to return"
-    relay_select = gets.chomp
-    if relay_select == 'a' || relay_select == 'd'
-      relay_select == 'a' ?  train_change.carr_attach(carr_relay) : train_change.carr_detach(carr_relay)
-      carr_relay.status
-    else
-      puts "Exiting up..."
+    return puts "\tCan't mix object types"unless train_change.type_match?(carr_relay)
+    return puts "\tThis carriage is attached already" unless carr_relay.detached
+    return puts "\tProhibited action - train is in motion" if train_change.not_stopped?
+    train_change.carr_attach(carr_relay)
+    puts "\tThis #{carr_relay.type.to_s} carriage is attached to train #{carr_relay.my_train_num}"
+  end
+
+  def detach
+    puts "\nCarriages are (if any):"
+    @carriages.each.with_index(1) do |carr, index|
+      print " #{index}\.   #{carr.number}  #{carr.type}"
+      print ",  status: ", carr.detached ? "detached\n" : "attached\n"
     end
+    puts SUB_MENU
+    idx = gets.to_i
+    return puts "\tTry again, empty field" if idx.zero?
+    carr_relay = @carriages[idx - 1]
+    return puts "\tUnknown Carriage" if carr_relay.nil?
+    return puts "\tThis carriage is detached already" if carr_relay.detached
+    puts "\nEnter Train number:"
+    train_num = gets.to_i
+    return puts "\tTry again, empty field" if train_num.zero?
+    train_change = trains.detect { |train| train.number == train_num }
+    return puts "\tUnknown Train" if train_change.nil?
+    return puts "\tProhibited action - train is in motion" if train_change.not_stopped?
+    return puts "\tProhibited action - train has no carriages" if train_change.carriage_list.empty?
+    train_change.carr_detach(carr_relay)
+    puts "\tThis #{carr_relay.type.to_s} carriage is detached"
   end
 
   def info
-    puts "\n* Enter correct digit or any other to return *\n
+    puts SUB_MENU
+    puts "
       1:  Stations Info
       2:  Trains Info
       3:  Routes Info
       4:  Carriage Info"
     case gets.strip
-      when "1"
-        puts "All of the stations, if any:"
-        stations.each { |station| puts " #{station.title} #{station} " }
-        puts "Enter Station title for Train list or Enter to quit:"
-        st_title = gets.chomp.to_sym
-        return puts "\tEmpty field, exiting..." if st_title.empty?
-        st_info = stations.detect { |station| station.title == st_title }
-        return puts "\tStation doesn't exist" if st_info.nil?
-        puts "\tTrain(s), if present:"
-        st_info.train_list.each { |train| puts " #{train.number} #{train}"}
-        self.info
-      when "2"
-        puts "All of the trains, if any:"
-        trains.each do |train|
-          print " #{train.number},  #{train.type}. "
-          print " Train is on route: #{train.route&.number}. "
-          train.status_carr
-          puts ""
-        end
-        self.info
-      when "3"
-        puts "All of the routes, if any:"
-        routes.each { |route| puts " #{route.number}  #{route.station_list}" }
-        self.info
-      when "4"
-        puts "\nEnter Carriage number:"
-        carr_num = gets.to_i
-        return puts "\tTry again, empty field" if carr_num.zero?
-        carr_info = carriages.detect { |carr| carr.number == carr_num }
-        return puts "\tUnknown Carriage" if carr_info.nil?
-        carr_info.status
-        self.info
-      else
-        puts "Exiting up..."
-        self.menu
+    when "1"
+      puts "\tAll of the stations, if any:"
+      stations.each { |station| puts " #{station.title}   #{station} " }
+      puts "\nEnter Station title for Train list or Enter to quit:"
+      st_title = gets.chomp.to_sym
+      return puts "\tEmpty field, exiting..." if st_title.empty?
+      st_info = stations.detect { |station| station.title == st_title }
+      return puts "\tUnknown Station" if st_info.nil?
+      puts "\tTrain(s), if present:"
+      st_info.train_list.each { |train| puts " #{train.number}   #{train}"}
+      self.info
+    when "2"
+      puts "\tAll of the trains, if any:"
+      trains.each do |train|
+        print " #{train.number},  #{train.type}. \n"
+        print " Train is on route: #{train.route&.number}.\n"
+        print " Train has #{train.carriage_count} carriage(s): "
+        train.carriage_list.each { |carr| print "#{carr.number} \> " }
+        puts "\n ----------"
+      end
+      self.info
+    when "3"
+      puts "\tAll of the routes, if any:"
+      routes.each do |route|
+        print " #{route.number}  "
+        route.station_list.each { |station| print " \* #{station.title}" }
+      end
+      self.info
+    when "4"
+      puts "\tCarriages are (if any):"
+      @carriages.each.with_index(1) do |carr, index|
+        puts " #{index}\.   #{carr.number}  #{carr.type}"
+      end
+      puts SUB_MENU
+      idx = gets.to_i
+      return puts "\tTry again, empty field" if idx.zero?
+      carr_info = @carriages[idx - 1]
+      return puts "\tUnknown Carriage" if carr_info.nil?
+      print "\tThis #{carr_info.type.to_s} carriage is ",
+        carr_info.detached ? "detached\n" : "attached to train #{carr_info.my_train_num}\n"
+      self.info
+    else
+      puts "Exiting up..."
+      self.menu
     end
   end
 
   def stations
-    @created_stations
+    @stations
   end
 
   def trains
-    @created_trains
+    @trains
   end
 
   def routes
-    @created_routes
+    @routes
   end
 
   def carriages
-    @created_carriages
+    @carriages
   end
 end
