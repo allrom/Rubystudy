@@ -27,11 +27,12 @@ class Train
   end
 
   def carr_attach(carriage)
-    carr_attach!(carriage)
+    carr_attach!(carriage) if type_match?(carriage)
   end
 
   def carr_detach(carriage)
-    carr_detach!(carriage)
+    @carriages.delete(carriage)
+    carriage.detach
   end
 
   def route=(route)
@@ -77,15 +78,21 @@ class Train
   end
 
   def type_match?(carriage)
-    carriage.type == self.type
+    carriage.type == type
   end
 
   # These methods should be passed to subclasses
   # but shouldn't be called from "outside"
-  # and alter train location or
-  # attach/detach carriages
+  # and alter train location or "wrongly"
+  # attach carriages
 
   protected
+
+  def carr_attach!(carriage)
+    @carriages << carriage
+    carriage.attach(type)
+    carriage.my_train_num = number
+  end
 
   def arrive
     actual_station.train_arrive(self)
@@ -93,16 +100,5 @@ class Train
 
   def departure
     actual_station.train_depart(self)
-  end
-
-  def carr_attach!(carriage)
-    @carriages << carriage
-    carriage.attached!
-    carriage.my_train_num = self.number
-  end
-
-  def carr_detach!(carriage)
-    @carriages.delete(carriage)
-    carriage.detached!
   end
 end

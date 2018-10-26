@@ -10,11 +10,11 @@ class Carriage
     @detached = true
   end
 
-  def detached!
+  def detach
     @detached = true
   end
 
-  def attached!
-    @detached = false
+  def attach(my_train_type, type)
+    @detached = false if my_train_type == type
   end
 end
