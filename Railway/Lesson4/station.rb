@@ -20,6 +20,10 @@ class Station
     @trains
   end
 
+  def train_stopped_here?
+    !train_list.empty?
+  end
+
   def train_display
     puts "Train numbers:"
     @trains.each { |s_train| puts s_train.number }
