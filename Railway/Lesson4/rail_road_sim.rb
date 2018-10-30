@@ -222,7 +222,7 @@ class RailRoadSim
   end
 
   def assign_route(train, route)
-    if route_not_assigned?(train, route)
+    if !route_yet_assigned?(train, route)
       train.route = route
       puts "\tRoute assigned"
     else
@@ -347,7 +347,7 @@ class RailRoadSim
   end
 
   def assign_station(station, route)
-    if station_not_assigned?(route, station)
+    if !station_yet_assigned?(route, station)
       route.station_add(station)
       puts "\tStation assigned"
     else
@@ -356,7 +356,7 @@ class RailRoadSim
   end
 
   def deassign_station(station, route)
-    if station_not_assigned?(route, station)
+    if !station_yet_assigned?(route, station)
       puts "\tStation is not in this Route"
     elsif
       route.boundary_station?(station)
@@ -467,7 +467,7 @@ class RailRoadSim
   end
 
   def attach_carriage(carr, train)
-    if train.not_attachable_carriage?(carr)
+    if !train.attachable_carriage?(carr)
       puts "\tCan't mix train/carriage types"
     elsif
       carr.attached?
@@ -491,10 +491,10 @@ class RailRoadSim
       train.carriage_list.empty?
       puts "\tNo action - train has no carriages"
     elsif
-      train.not_attachable_carriage?(carr) && carr.my_train_num != train.number
+      !train.carriage_list.include?(carr)
       puts "\tNo action - wrong train/wrong carriage"
     else
-      train.carr_detach(carr)
+      train.carr_detach!(carr)
       puts "\t#{carr.type.to_s} carriage #{carr.number} is detached"
     end
   end
@@ -607,24 +607,12 @@ class RailRoadSim
     route.station_list.include?(station)
   end
 
-  def station_not_assigned?(route, station)
-    !station_yet_assigned?(route, station)
-  end
-
-  def route_exists?(route_num)
-    !route_not_exists?(route_num)
-  end
-
   def route_not_exists?(route_num)
     routes.detect { |route| route.number == route_num } == nil
   end
 
   def route_yet_assigned?(train, route)
     train.route&.number == route.number
-  end
-
-  def route_not_assigned?(train, route)
-    !route_yet_assigned?(train, route)
   end
 
   def train_not_exists?(train_num, train_type)
