@@ -1,21 +1,19 @@
 # Lesson5 (Railway)  Class Station
 #
 class Station
-  @existing_instances = []
-  @count_instances = 0
-
-  class << self
-    attr_reader :existing_instances
-    attr_accessor :count_instances
-
-    def all
-      existing_instances.each { |station| puts "#{station}, #{station.title}" }
-    end
-  end
-
   include InstanceCounter
 
   attr_reader :title
+
+  @existing_instances = []
+
+  class << self
+    attr_reader :existing_instances
+
+    def all
+      existing_instances
+    end
+  end
 
   def initialize(title)
     self.class.existing_instances << self

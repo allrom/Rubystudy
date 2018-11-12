@@ -1,20 +1,11 @@
 # Lesson5 (Railway)  Class Route
 #
 class Route
-  @existing_instances = []
-  @count_instances = 0
-
-  class << self
-    attr_reader :existing_instances
-    attr_accessor :count_instances
-  end
-
   include InstanceCounter
 
   attr_reader :number
 
   def initialize(number, station_start, station_end)
-    self.class.existing_instances << self
     register_instance
     @number = number
     @stations = [station_start, station_end]

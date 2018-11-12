@@ -1,28 +1,25 @@
 # Lesson5 (Railway)  Parent Class Train
 #
 class Train
-  @existing_instances = []
-
-  class << self
-    attr_reader :existing_instances
-    attr_writer :count_instances
-
-    def count_instances
-      @count_instances ||= 0
-    end
-
-    def find(number)
-      puts "Train (if present):"
-      existing_instances.find { |train| train.number == number }
-    end
-  end
-
   include InstanceCounter
   include Manufacturer
 
-  attr_reader :speed, :type, :number, :route
+   attr_reader :speed, :type, :number, :route
+
+  class << self
+    def existing_instances
+      @@existing_instances ||= {}
+    end
+
+    def find(number)
+      existing_instances.fetch(number, nil)
+    end
+  end
 
   def initialize(number, type)
+    self.class.existing_instances[number] ||= []
+    self.class.existing_instances[number] << self
+
     @number = number
     @type = type
     @carriages = []

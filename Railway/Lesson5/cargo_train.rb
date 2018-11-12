@@ -3,7 +3,6 @@
 class CargoTrain < Train
 
   def initialize(number)
-    Train.existing_instances << self
     register_instance
     super(number, :cargo)
   end
