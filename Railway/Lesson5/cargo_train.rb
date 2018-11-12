@@ -3,7 +3,6 @@
 class CargoTrain < Train
 
   def initialize(number)
-    register_instance
     super(number, :cargo)
   end
 

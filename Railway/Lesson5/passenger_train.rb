@@ -3,7 +3,6 @@
 class PassengerTrain < Train
 
   def initialize(number)
-    register_instance
     super(number, :passenger)
   end
 

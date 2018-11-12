@@ -4,22 +4,17 @@ class Train
   include InstanceCounter
   include Manufacturer
 
-   attr_reader :speed, :type, :number, :route
+  attr_reader :speed, :type, :number, :route
 
-  class << self
-    def existing_instances
-      @@existing_instances ||= {}
-    end
+  @@existing_instances = {}
 
-    def find(number)
-      existing_instances.fetch(number, nil)
-    end
+  def self.find(number)
+    @@existing_instances[number]
   end
 
   def initialize(number, type)
-    self.class.existing_instances[number] ||= []
-    self.class.existing_instances[number] << self
-
+    @@existing_instances[number] = self
+    register_instance
     @number = number
     @type = type
     @carriages = []

@@ -5,18 +5,14 @@ class Station
 
   attr_reader :title
 
-  @existing_instances = []
+  @@existing_instances = []
 
-  class << self
-    attr_reader :existing_instances
-
-    def all
-      existing_instances
-    end
+  def self.all
+    @@existing_instances
   end
 
   def initialize(title)
-    self.class.existing_instances << self
+    @@existing_instances << self
     register_instance
     @title = title
     @trains = []
