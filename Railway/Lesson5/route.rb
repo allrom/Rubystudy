@@ -6,9 +6,9 @@ class Route
   attr_reader :number
 
   def initialize(number, station_start, station_end)
-    register_instance
     @number = number
     @stations = [station_start, station_end]
+    register_instance
   end
 
   def route_start

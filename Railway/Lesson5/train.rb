@@ -13,12 +13,12 @@ class Train
   end
 
   def initialize(number, type)
-    @@existing_instances[number] = self
-    register_instance
     @number = number
     @type = type
     @carriages = []
     @speed = 0
+    @@existing_instances[number] = self
+    register_instance
   end
 
   def fullstop

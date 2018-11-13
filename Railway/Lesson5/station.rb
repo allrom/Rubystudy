@@ -12,10 +12,10 @@ class Station
   end
 
   def initialize(title)
-    @@existing_instances << self
-    register_instance
     @title = title
     @trains = []
+    @@existing_instances << self
+    register_instance
   end
 
   def train_arrive(train)
@@ -32,11 +32,6 @@ class Station
 
   def train_stopped_here?
     !train_list.empty?
-  end
-
-  def train_display
-    puts "Train numbers:"
-    @trains.each { |s_train| puts s_train.number }
   end
 
   def train_type_count(type)
