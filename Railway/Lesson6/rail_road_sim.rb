@@ -192,7 +192,6 @@ class RailRoadSim
     puts "\n Enter Train number (3 letters|digits(-optional)2 letters|digits):"
     train_num = gets.strip
     attempt ||= 0
-    PassengerTrain.new(train_num)
     if train_not_exists?(train_num, :passenger)
       @trains << PassengerTrain.new(train_num)
       puts "\tPassenger Train #{train_num} is created"
@@ -201,15 +200,13 @@ class RailRoadSim
     end
   rescue => e
     puts e.message + "\n\tTry again"
-    attempt += 1
-    retry if attempt < 3
+    retry if ( attempt += 1 ) < 3
   end
 
   def create_cargo_train
     puts "\n Enter Train number (3 letters|digits(-optional)2 letters|digits):"
     train_num = gets.strip
     attempt ||= 0
-    CargoTrain.new(train_num)
     if train_not_exists?(train_num, :passenger)
       @trains << CargoTrain.new(train_num)
       puts "\tCargo Train #{train_num} is created"
@@ -218,8 +215,7 @@ class RailRoadSim
     end
   rescue => e
     puts e.message + "\n\tTry again"
-    attempt += 1
-    retry if attempt < 3
+    retry if ( attempt += 1 ) < 3
   end
 
   def assign_route_menu

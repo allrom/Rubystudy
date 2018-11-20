@@ -3,9 +3,10 @@
 class Train
   include InstanceCounter
   include Manufacturer
-  include ArgsCheck
 
   attr_reader :speed, :type, :number, :route
+
+  TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
 
   @@existing_instances = {}
 
@@ -14,19 +15,17 @@ class Train
   end
 
   def initialize(number, type)
-    validate_string!(number)
-    validate_format!(number)
     @number = number
     @type = type
     @carriages = []
     @speed = 0
+    validate!
     @@existing_instances[number] = self
     register_instance
   end
 
   def valid?
-    validate_string!(number)
-    validate_format!(number)
+    validate!
     true
   rescue
     false
@@ -120,5 +119,11 @@ class Train
 
   def departure
     actual_station.train_depart(self)
+  end
+
+  def validate!
+    raise ArgumentError, "\tTrain number can't be nil" if number.nil?
+    raise ArgumentError, "\tEmpty string field is given" if number.empty?
+    raise ArgumentError, "\tNumber field in wrong format is given" unless number =~ TRAIN_NUMBER_FORMAT
   end
 end

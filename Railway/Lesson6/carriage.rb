@@ -2,20 +2,19 @@
 #
 class Carriage
   include Manufacturer
-  include ArgsCheck
 
   attr_reader :number, :type, :detached
   attr_accessor :my_train_num
 
   def initialize(number, type)
-    validate_num!(number)
     @number = number
     @type = type
     @detached = true
+    validate!
   end
 
   def valid?
-    validate_num!(number)
+    validate!
     true
   rescue
     false
@@ -35,5 +34,13 @@ class Carriage
 
   def attached!
     @detached = false
+  end
+
+  protected
+
+  def validate!
+    raise ArgumentError, "\tCarriage number can't be nil" if number.nil?
+    raise ArgumentError, "\tEmpty (zero) num field is given" if number.zero?
+    raise ArgumentError, "\tPositive number expected" if number.negative?
   end
 end

@@ -2,7 +2,6 @@
 #
 class Station
   include InstanceCounter
-  include ArgsCheck
 
   attr_reader :title
 
@@ -13,15 +12,15 @@ class Station
   end
 
   def initialize(title)
-    validate_string!(title)
     @title = title
     @trains = []
+    validate!
     @@existing_instances << self
     register_instance
   end
 
   def valid?
-    validate_string!(title)
+    validate!
     true
   rescue
     false
@@ -45,5 +44,12 @@ class Station
 
   def train_type_count(type)
     @trains.count { |train| train.type == type }
+  end
+
+  protected
+
+  def validate!
+    raise ArgumentError, "\tStation title can't be nil" if title.nil?
+    raise ArgumentError, "\tEmpty string field is given" if title.empty?
   end
 end

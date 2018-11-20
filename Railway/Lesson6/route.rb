@@ -2,22 +2,18 @@
 #
 class Route
   include InstanceCounter
-  include ArgsCheck
 
   attr_reader :number
 
   def initialize(number, station_start, station_end)
-    validate_num!(number)
-    validate_station_type!(station_start)
-    validate_station_type!(station_end)
     @number = number
     @stations = [station_start, station_end]
+    validate!
     register_instance
   end
 
   def valid?
-    validate_num!(number)
-    station_list.each { |station| validate_station_type!(station) }
+    validate!
     true
   rescue
     false
@@ -45,5 +41,14 @@ class Route
 
   def station_list
     @stations
+  end
+
+  protected
+
+  def validate!
+    raise ArgumentError, "\tRoute number can't be nil" if number.nil?
+    raise ArgumentError, "\tEmpty (zero) num field is given" if number.zero?
+    raise ArgumentError, "\tPositive number expected" if number.negative?
+    raise TypeError, "\tStation object expected" unless route_start.is_a?(Station) && route_end.is_a?(Station)
   end
 end
