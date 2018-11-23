@@ -2,6 +2,7 @@
 #
 class Station
   include InstanceCounter
+  include CheckValid
 
   attr_reader :title
 
@@ -17,13 +18,6 @@ class Station
     validate!
     @@existing_instances << self
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue
-    false
   end
 
   def train_arrive(train)

@@ -2,6 +2,7 @@
 #
 class Carriage
   include Manufacturer
+  include CheckValid
 
   attr_reader :number, :type, :detached
   attr_accessor :my_train_num
@@ -11,13 +12,6 @@ class Carriage
     @type = type
     @detached = true
     validate!
-  end
-
-  def valid?
-    validate!
-    true
-  rescue
-    false
   end
 
   def detached?

@@ -3,6 +3,7 @@
 class Train
   include InstanceCounter
   include Manufacturer
+  include CheckValid
 
   attr_reader :speed, :type, :number, :route
 
@@ -22,13 +23,6 @@ class Train
     validate!
     @@existing_instances[number] = self
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue
-    false
   end
 
   def fullstop
