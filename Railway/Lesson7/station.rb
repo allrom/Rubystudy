@@ -1,10 +1,10 @@
-# Lesson6 (Railway)  Class Station
+# Lesson7 (Railway)  Class Station
 #
 class Station
   include InstanceCounter
   include CheckValid
 
-  attr_reader :title
+  attr_reader :title, :trains
 
   @@existing_instances = []
 
@@ -28,10 +28,6 @@ class Station
     @trains.delete(train)
   end
 
-  def trains
-    @trains
-  end
-
   def train_stopped_here?
     !trains.empty?
   end
@@ -41,9 +37,7 @@ class Station
   end
 
   def trains_avail
-    trains.each do |train|
-      yield(train)
-    end
+    trains.each { |train| yield(train) }
   end
 
   protected

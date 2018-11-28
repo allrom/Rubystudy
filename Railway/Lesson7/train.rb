@@ -1,11 +1,11 @@
-# Lesson6 (Railway)  Parent Class Train
+# Lesson7 (Railway)  Parent Class Train
 #
 class Train
   include InstanceCounter
   include Manufacturer
   include CheckValid
 
-  attr_reader :speed, :type, :number, :route
+  attr_reader :speed, :type, :number, :route, :carriages
 
   TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
 
@@ -78,14 +78,8 @@ class Train
     @carriages.count
   end
 
-  def carriages
-    @carriages
-  end
-
   def carriages_avail
-    carriages.each do |carrg|
-      yield(carrg)
-    end
+    carriages.each { |carrg| yield(carrg) }
   end
 
   def previous_station
@@ -102,8 +96,6 @@ class Train
 
   # These methods should be passed to subclasses
   # but shouldn't be called from "outside"
-  # and alter train location or "wrongly"
-  # switch carriages
 
   protected
 

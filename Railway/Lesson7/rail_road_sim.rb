@@ -527,19 +527,18 @@ class RailRoadSim
       puts "\t...Nothing selected"
       return
     end
+    return puts "\tFull Load, no more free Seats/Capacity" if carriage.volume_free.zero?
     if carriage.type == :passenger
-      return puts "\tFull Load, no more free Seats" if carriage.seats_free.zero?
-      carriage.occupy_seat
+      carriage.take_volume(1)
       print "\tNow Carriage #{carriage.number} has: "
-      print "#{carriage.seats_free}/#{carriage.seats_occupied} free/occup. Seats\n"
+      print "#{carriage.volume_free}/#{carriage.volume_used} free/occup. Seats\n"
     else
-      return puts "\tFull Load, no more free Capacity" if carriage.capacity_free.zero?
       puts "\nEnter Capacity to be used up (number):"
       capacity = gets.to_i
       return puts("\tTry again, empty field") if capacity.zero?
-      carriage.use_capacity(capacity)
+      carriage.take_volume(capacity)
       print "\tNow Carriage #{carriage.number} has: "
-      print "#{carriage.capacity_free}/#{carriage.capacity_used} free/used Capacity\n"
+      print "#{carriage.volume_free}/#{carriage.volume_used} free/used Capacity\n"
     end
   end
 
@@ -572,7 +571,7 @@ class RailRoadSim
     carriages.each.with_index(1) do |carr, index|
       print " #{index}\.  Number #{carr.number},  #{carr.type}"
       print ", status: ", carr.detached? ? "detached" : "attached"
-      print ". Free ", carr.type == :passenger ? "seats: #{carr.seats_free}\n" : "capacity: #{carr.capacity_free}\n"
+      print ". Free ", carr.type == :passenger ? "seats: #{carr.volume_free}\n" : "capacity: #{carr.volume_free}\n"
     end
   end
 
@@ -616,9 +615,9 @@ class RailRoadSim
     train.carriages_avail do |carrg|
       print "\tNumber #{carrg.number}, #{carrg.type}. "
       if carrg.type == :passenger
-        print "Seats free/occup. #{carrg.seats_free}/#{carrg.seats_occupied}\n"
+        print "Seats free/occup. #{carrg.volume_free}/#{carrg.volume_used}\n"
       else
-        print "Capacity free/used #{carrg.capacity_free}/#{carrg.capacity_used}\n"
+        print "Capacity free/used #{carrg.volume_free}/#{carrg.volume_used}\n"
       end
     end
   end
