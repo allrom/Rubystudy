@@ -529,7 +529,7 @@ class RailRoadSim
     end
     return puts "\tFull Load, no more free Seats/Capacity" if carriage.volume_free.zero?
     if carriage.type == :passenger
-      carriage.take_volume
+      carriage.take_volume(1)
       print "\tNow Carriage #{carriage.number} has: "
       print "#{carriage.volume_free}/#{carriage.volume_used} free/occup. Seats\n"
     else

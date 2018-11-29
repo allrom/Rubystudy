@@ -6,7 +6,7 @@ class PassengerCarriage < Carriage
     super(number, :passenger, seats)
   end
 
-  def take_volume(unit = 1)
+  def take_volume(_unit)
     super(1)
   end
 end
