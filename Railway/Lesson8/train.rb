@@ -7,7 +7,7 @@ class Train
 
   attr_reader :speed, :type, :number, :route, :carriages
 
-  TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i.freeze
+  TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
 
   @@existing_instances = {}
 
