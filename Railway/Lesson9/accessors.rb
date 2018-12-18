@@ -20,15 +20,8 @@ module Accessors
           instance_variable_set("@#{acsr_key}", acsr_value)
           self.class.accessors[acsr_key.to_sym] << acsr_value
         end
-      end
-    end
-
-    def attr_history_methods(*attrs)
-      attrs.each do |attr_method|
-        send(
-          :define_method, "#{attr_method}_history",
-          -> { self.class.accessors[attr_method.to_sym] }
-        )
+        define_method "#{acsr_key}_history",
+          -> { self.class.accessors[acsr_key.to_sym] }
       end
     end
 

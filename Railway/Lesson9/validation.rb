@@ -7,23 +7,18 @@ module Validation
   end
 
   module ClassMethods
-    VALD_TYPES = %w[presence format type]
-
-    attr_writer :validation_types
-
-    def validation_types
-      @validation_types ||= []
+    def validation_sets
+      @validation_sets ||= {}
     end
 
-    VALD_TYPES.each do |vald_type|
-      define_method "#{vald_type}".to_sym do |attr_check, *args|
-        req_presence(attr_check) if vald_type == "presence"
-        req_format(attr_check, args.first) if vald_type == "format"
-        req_type(attr_check, args.first) if vald_type == "type"
-      end
+    def validate(attribute, validation_type, *args)
+      validation_sets[validation_type] ||= []
+      validation_sets[validation_type] << [attribute, *args]
     end
+  end
 
-    def req_presence(attr)
+  module InstanceMethods
+    def presence(attr)
       raise ArgumentError, "Attribute can't be nil" if attr.nil?
       if attr.is_a?(String) && attr.empty?
         raise ArgumentError, "Attribute can't be empty string"
@@ -33,20 +28,14 @@ module Validation
       end
     end
 
-    def req_format(attr, format)
-      raise ArgumentError, "Attribute has a wrong format" unless attr =~ format
+    def format(attr, format)
+      raise ArgumentError, "\"#{attr}\", wrong format" unless attr =~ format
     end
 
-    def req_type(attr, type)
-      raise TypeError, "Attribute class mismatch" unless attr.is_a?(type)
+    def type(attr, type)
+      raise TypeError, "\"#{attr}\", class mismatch" unless attr.is_a?(type)
     end
 
-    def validate(attribute, validation_type, *args)
-      send(validation_type, attribute, *args)
-    end
-  end
-
-  module InstanceMethods
     def valid?
       validate!
       true
@@ -57,10 +46,12 @@ module Validation
     protected
 
     def validate!
-      self.class.validation_types.each do |vald_type|
-        attrs = instance_variable_get("@#{vald_type}_validation_attrs")
-        attribute, *args = attrs
-        self.class.validate(attribute, vald_type, *args)
+      self.class.validation_sets.each do |vald_type, vald_set|
+        vald_set.each do |arg|
+          attr_check = instance_variable_get("@#{arg.first}")
+          send(vald_type, attr_check) if method(vald_type).arity == 1
+          send(vald_type, attr_check, arg.last) if method(vald_type).arity == 2
+        end
       end
     end
   end

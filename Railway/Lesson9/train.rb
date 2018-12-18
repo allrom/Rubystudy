@@ -8,7 +8,6 @@ class Train
 
   attr_reader :type, :number, :route, :carriages
   attr_accessor_with_history :speed, :distance
-  attr_history_methods :speed, :distance
 
   TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
 

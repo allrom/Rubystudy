@@ -4,10 +4,15 @@ class Station
   include InstanceCounter
   include Validation
 
-  attr_reader :title, :trains
-  validation_types << :presence << :type << :format
+  attr_reader :title, :trains, :status
 
   STATION_TITLE_FORMAT = /^[\dA-Z]{3}$/
+
+  validate :title, :presence
+  validate :title, :type, String
+  validate :title, :format, STATION_TITLE_FORMAT
+  validate :status, :presence
+  validate :status, :type, String
 
   @@existing_instances = []
 
@@ -18,9 +23,7 @@ class Station
   def initialize(title)
     @title = title
     @trains = []
-    @presence_validation_attrs = *title
-    @type_validation_attrs = *title, String
-    @format_validation_attrs = *title, STATION_TITLE_FORMAT
+    @status = 'NODE'
     validate!
     @@existing_instances << self
     register_instance
