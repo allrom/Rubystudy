@@ -2,10 +2,13 @@
 #
 class Carriage
   include Manufacturer
-  include CheckValid
+  include Validation
 
   attr_reader :number, :type, :detached, :volume_total, :volume_free
   attr_accessor :my_train_num
+
+  validate :number, :presence
+  validate :number, :atype, Integer
 
   def initialize(number, type, init_volume)
     @number = number
@@ -13,12 +16,11 @@ class Carriage
     @volume_free = init_volume
     @volume_total = init_volume
     @detached = true
-
     validate!
   end
 
   def detached?
-    @detached
+    @deta
   end
 
   def attached?
@@ -42,12 +44,6 @@ class Carriage
   end
 
   protected
-
-  def validate!
-    raise ArgumentError, "\tCarriage number can't be nil" if number.nil?
-    raise ArgumentError, "\tEmpty (zero) num field is given" if number.zero?
-    raise ArgumentError, "\tPositive number expected" if number.negative?
-  end
 
   def use_up!(unit)
     if unit > volume_free

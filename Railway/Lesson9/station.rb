@@ -9,10 +9,10 @@ class Station
   STATION_TITLE_FORMAT = /^[\dA-Z]{3}$/
 
   validate :title, :presence
-  validate :title, :type, String
+  validate :title, :atype, String
   validate :title, :format, STATION_TITLE_FORMAT
   validate :status, :presence
-  validate :status, :type, String
+  validate :status, :atype, String
 
   @@existing_instances = []
 

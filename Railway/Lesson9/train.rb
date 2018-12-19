@@ -4,12 +4,16 @@ class Train
   include InstanceCounter
   include Manufacturer
   include Accessors
-  include CheckValid
+  include Validation
 
   attr_reader :type, :number, :route, :carriages
   attr_accessor_with_history :speed, :distance
 
   TRAIN_NUMBER_FORMAT = /^[\da-z]{3}-?[\da-z]{2}$/i
+
+  validate :number, :presence
+  validate :number, :atype, String
+  validate :number, :format, TRAIN_NUMBER_FORMAT
 
   @@existing_instances = {}
 
@@ -114,12 +118,5 @@ class Train
 
   def departure
     actual_station.train_depart(self)
-  end
-
-  def validate!
-    raise ArgumentError, "\tTrain number can't be nil" if number.nil?
-    raise ArgumentError, "\tEmpty string field is given" if number.empty?
-    raise ArgumentError, "\tNumber field in wrong format is given"\
-      unless number =~ TRAIN_NUMBER_FORMAT
   end
 end

@@ -12,12 +12,24 @@ module Validation
     end
 
     def validate(attribute, validation_type, *args)
+      arguments = {}
       validation_sets[validation_type] ||= []
-      validation_sets[validation_type] << [attribute, *args]
+      arguments[:attr_name] = attribute
+      arguments[:options] = *args if args
+      validation_sets[validation_type] << arguments
     end
   end
 
   module InstanceMethods
+    def valid?
+      validate!
+      true
+    rescue StandardError
+      false
+    end
+
+    protected
+
     def presence(attr)
       raise ArgumentError, "Attribute can't be nil" if attr.nil?
       if attr.is_a?(String) && attr.empty?
@@ -32,25 +44,19 @@ module Validation
       raise ArgumentError, "\"#{attr}\", wrong format" unless attr =~ format
     end
 
-    def type(attr, type)
+    def atype(attr, type)
       raise TypeError, "\"#{attr}\", class mismatch" unless attr.is_a?(type)
     end
 
-    def valid?
-      validate!
-      true
-    rescue StandardError
-      false
-    end
-
-    protected
-
     def validate!
-      self.class.validation_sets.each do |vald_type, vald_set|
-        vald_set.each do |arg|
-          attr_check = instance_variable_get("@#{arg.first}")
-          send(vald_type, attr_check) if method(vald_type).arity == 1
-          send(vald_type, attr_check, arg.last) if method(vald_type).arity == 2
+      self.class.validation_sets.each do |vald_type, arguments|
+        arguments.each do |argument|
+          attr_check = instance_variable_get("@#{argument[:attr_name]}")
+          if argument[:options].empty?
+            send(vald_type, attr_check)
+          else
+            argument[:options].each { |option| send(vald_type, attr_check, option) }
+          end
         end
       end
     end

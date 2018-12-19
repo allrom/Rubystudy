@@ -17,11 +17,13 @@ module Accessors
           instance_variable_get("@#{acsr_key}")
         end
         define_method "#{acsr_key}=".to_sym do |acsr_value|
+          prev_value = send(acsr_key.to_sym)
           instance_variable_set("@#{acsr_key}", acsr_value)
-          self.class.accessors[acsr_key.to_sym] << acsr_value
+          self.class.accessors[acsr_key.to_sym] << prev_value if prev_value
         end
-        define_method "#{acsr_key}_history",
-          -> { self.class.accessors[acsr_key.to_sym] }
+        define_method "#{acsr_key}_history" do
+          self.class.accessors[acsr_key.to_sym]
+        end
       end
     end
 

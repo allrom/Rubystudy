@@ -2,12 +2,18 @@
 #
 class Route
   include InstanceCounter
-  include CheckValid
+  include Validation
 
-  attr_reader :number
+  attr_reader :number, :station_start, :station_end
+
+  validate :number, :presence
+  validate :station_start, :atype, Station
+  validate :station_end, :atype, Station
 
   def initialize(number, station_start, station_end)
     @number = number
+    @station_start = station_start
+    @station_end = station_end
     @stations = [station_start, station_end]
     validate!
     register_instance
@@ -35,17 +41,5 @@ class Route
 
   def station_list
     @stations
-  end
-
-  protected
-
-  def validate!
-    raise ArgumentError, "Route number can't be nil" if number.nil?
-    raise ArgumentError, "Empty (zero) num field is given" if number.zero?
-    raise ArgumentError, "Positive number expected" if number.negative?
-    raise TypeError, "Station object expected"\
-      unless [route_start, route_end].all?(Station)
-    raise TypeError, "Invalid route set (start = end)"\
-      if [route_start, route_end].uniq.count == 1
   end
 end
